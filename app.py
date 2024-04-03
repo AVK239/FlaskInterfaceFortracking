@@ -3,13 +3,17 @@ import cv2
 import torch
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///people_count.db'
+# Для SQLite: 'sqlite:///yourdatabase.db'
+# Для PostgreSQL: 'postgresql://username:password@localhost/yourdatabase'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/mydatabase'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-# Определение модели после инициализации db
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
 class PeopleCount(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, nullable=False)
@@ -63,9 +67,11 @@ def video_feed():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('project.html')
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        # Эта проверка не нужна для PostgreSQL, но оставлена для демонстрации.
+        if db.engine.url.drivername == 'sqlite':
+            db.create_all()
     app.run(debug=True)

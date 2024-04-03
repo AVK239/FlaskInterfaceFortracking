@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Кафе Камера</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body style="background-image: url('background.png'); background-size: 100%;">
+    <nav class="navbar navbar-light bg-light shadow p-3">
+        <div class="container mx-4" style="width: fit-content;">
+            <img src="logo2.png" alt="Логотип"width="77" height="25">
+            <span class="ms-5">Статистика посещений</span>
+        </div>
+    </nav>
+    <h4 class="m-4 ">Статистика посещений</h4>
+        <script>
+        function updateGraph() {
+            fetch('/graph')
+                .then(response => response.blob())
+                .then(imageBlob => {
+                    // Создаем URL для blob-объекта
+                    const imageObjectURL = URL.createObjectURL(imageBlob);
+                    document.getElementById('graphImage').src = imageObjectURL;
+                })
+                .catch(error => console.error('Ошибка обновления графика:', error));
+        }
+
+        // Обновляем график каждые 5 минут (300000 миллисекунд)
+        setInterval(updateGraph, 300000);
+
+        // Вызываем функцию при первой загрузке страницы
+        document.addEventListener('DOMContentLoaded', updateGraph);
+        </script>
+
+
+    <div class="d-flex justify-content-center mt-3">
+        <div class="container" style="width: fit-content">
+            <input type="date" class="shadow rounded" >
+            <p><div class="shadow p-3 rounded bg-light" style="min-width:900px; min-height: 250px;"><img id="graphImage" src="/graph" alt="График посетителей"></div></p>
+        </div>
+    </div>
+    <h4 class="m-4 ">Видеопоток кафе</h4>
+    <div class="d-flex justify-content-center mt-3">
+        <div>
+                <iframe src="https://www.youtube.com/embed/Qm0igtO6fAk" allowfullscreen style="min-width:400px; min-height:225px;"></iframe>
+        </div>
+    </div>
+</body>
+</html>
